@@ -18,6 +18,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private Button btnAddIngredient;
+
+    private Button btnSuggestedRecipes;
     private RecyclerView recyclerViewPantry;
     private TextView tvPantryMessage;
 
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btnAddIngredient = findViewById(R.id.btnAddIngredient);
+        btnSuggestedRecipes = findViewById(R.id.btnSuggestedRecipes);
         recyclerViewPantry = findViewById(R.id.recyclerViewPantry);
         tvPantryMessage = findViewById(R.id.tvPantryMessage);
 
@@ -46,6 +49,11 @@ public class MainActivity extends AppCompatActivity {
 
         btnAddIngredient.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddEditIngredientActivity.class);
+            startActivity(intent);
+        });
+
+        btnSuggestedRecipes.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SuggestedRecipesActivity.class);
             startActivity(intent);
         });
 
