@@ -4,11 +4,17 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class AddEditIngredientActivity extends AppCompatActivity {
 
@@ -16,9 +22,11 @@ public class AddEditIngredientActivity extends AppCompatActivity {
     private EditText etQuantity;
     private EditText etUnit;
     private EditText etExpiryDate;
-    private Button btnSaveIngredient;
 
+    private Button btnSaveIngredient;
     private Button btnDeleteIngredient;
+
+    private TextView tvIngredientTitle;
 
     private DatabaseHelper databaseHelper;
 
@@ -33,19 +41,34 @@ public class AddEditIngredientActivity extends AppCompatActivity {
         etQuantity = findViewById(R.id.etQuantity);
         etUnit = findViewById(R.id.etUnit);
         etExpiryDate = findViewById(R.id.etExpiryDate);
+
         btnSaveIngredient = findViewById(R.id.btnSaveIngredient);
         btnDeleteIngredient = findViewById(R.id.btnDeleteIngredient);
 
+        tvIngredientTitle = findViewById(R.id.tvIngredientTitle);
+
         databaseHelper = new DatabaseHelper(this);
 
+        // Checks if the existing ingredient was selected
         ingredientId = getIntent().getIntExtra("ingredient_id", -1);
 
         if (ingredientId != -1) {
+
+            // Edit mode
+            tvIngredientTitle.setText("Edit Ingredient");
+            btnDeleteIngredient.setVisibility(View.VISIBLE);
+
             loadIngredientData();
-            btnDeleteIngredient.setVisibility(android.view.View.VISIBLE);
+
+        } else {
+
+            // Add mode
+            tvIngredientTitle.setText("Add Ingredient");
+            btnDeleteIngredient.setVisibility(View.GONE);
         }
 
         btnSaveIngredient.setOnClickListener(v -> saveIngredient());
+
         btnDeleteIngredient.setOnClickListener(v -> deleteIngredient());
     }
 
@@ -53,6 +76,7 @@ public class AddEditIngredientActivity extends AppCompatActivity {
 
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
+        // Get the ingredient that was selected on the pantry screen
         Cursor cursor = db.rawQuery(
                 "SELECT * FROM pantry WHERE id = ?",
                 new String[]{String.valueOf(ingredientId)}
@@ -89,12 +113,22 @@ public class AddEditIngredientActivity extends AppCompatActivity {
 
     private void saveIngredient() {
 
-        String name = etIngredientName.getText().toString().trim();
-        String quantityText = etQuantity.getText().toString().trim();
-        String unit = etUnit.getText().toString().trim();
-        String expiryDate = etExpiryDate.getText().toString().trim();
+        String name =
+                etIngredientName.getText().toString().trim();
 
-        if (name.isEmpty() || quantityText.isEmpty() || unit.isEmpty()) {
+        String quantityText =
+                etQuantity.getText().toString().trim();
+
+        String unit =
+                etUnit.getText().toString().trim();
+
+        String expiryDate =
+                etExpiryDate.getText().toString().trim();
+
+        // Name, quantity and unit are a must
+        if (name.isEmpty()
+                || quantityText.isEmpty()
+                || unit.isEmpty()) {
 
             Toast.makeText(
                     this,
@@ -105,9 +139,64 @@ public class AddEditIngredientActivity extends AppCompatActivity {
             return;
         }
 
-        double quantity = Double.parseDouble(quantityText);
+        // Expiry date is not needed
+        if (!expiryDate.isEmpty()) {
 
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+            SimpleDateFormat dateFormat =
+                    new SimpleDateFormat(
+                            "yyyy-MM-dd",
+                            Locale.getDefault()
+                    );
+
+            dateFormat.setLenient(false);
+
+            try {
+
+                dateFormat.parse(expiryDate);
+
+            } catch (ParseException e) {
+
+                Toast.makeText(
+                        this,
+                        "Expiry date must be YYYY-MM-DD",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                return;
+            }
+        }
+
+        double quantity;
+
+        // Makes sure the quantity is actually a number
+        try {
+
+            quantity = Double.parseDouble(quantityText);
+
+        } catch (NumberFormatException e) {
+
+            Toast.makeText(
+                    this,
+                    "Please enter a valid quantity",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
+        if (quantity <= 0) {
+
+            Toast.makeText(
+                    this,
+                    "Quantity must be greater than 0",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
+        SQLiteDatabase db =
+                databaseHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
 
@@ -116,27 +205,32 @@ public class AddEditIngredientActivity extends AppCompatActivity {
         values.put("unit", unit);
         values.put("expiry_date", expiryDate);
 
-        long result;
+        boolean success;
 
         if (ingredientId == -1) {
 
-            result = db.insert(
+            // Adds a new ingredient
+            long result = db.insert(
                     "pantry",
                     null,
                     values
             );
 
+            success = result != -1;
+
         } else {
 
-            result = db.update(
+            int result = db.update(
                     "pantry",
                     values,
                     "id = ?",
                     new String[]{String.valueOf(ingredientId)}
             );
+
+            success = result > 0;
         }
 
-        if (result != -1) {
+        if (success) {
 
             if (ingredientId == -1) {
 
@@ -155,6 +249,7 @@ public class AddEditIngredientActivity extends AppCompatActivity {
                 ).show();
             }
 
+            // Close the current screen and returns to the pantry
             finish();
 
         } else {
@@ -166,10 +261,13 @@ public class AddEditIngredientActivity extends AppCompatActivity {
             ).show();
         }
     }
+
     private void deleteIngredient() {
 
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        SQLiteDatabase db =
+                databaseHelper.getWritableDatabase();
 
+        // Deletes the selected ingredient using its ID
         int result = db.delete(
                 "pantry",
                 "id = ?",
@@ -177,6 +275,7 @@ public class AddEditIngredientActivity extends AppCompatActivity {
         );
 
         if (result > 0) {
+
             Toast.makeText(
                     this,
                     "Ingredient deleted successfully",
@@ -184,7 +283,9 @@ public class AddEditIngredientActivity extends AppCompatActivity {
             ).show();
 
             finish();
+
         } else {
+
             Toast.makeText(
                     this,
                     "Failed to delete ingredient",
