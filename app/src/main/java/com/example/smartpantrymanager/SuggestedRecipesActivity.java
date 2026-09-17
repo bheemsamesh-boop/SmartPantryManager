@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,10 +32,19 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         recyclerViewRecipes = findViewById(R.id.recyclerViewRecipes);
         tvSuggestedRecipesMessage = findViewById(R.id.tvSuggestedRecipesMessage);
 
+        Button btnBackToPantry = findViewById(R.id.btnBackToPantry);
+
+        // Go back to the pantry screen
+        btnBackToPantry.setOnClickListener(v -> {
+            finish();
+        });
+
         databaseHelper = new DatabaseHelper(this);
         recipeList = new ArrayList<>();
 
-        recyclerViewRecipes.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewRecipes.setLayoutManager(
+                new LinearLayoutManager(this)
+        );
 
         recipeAdapter = new RecipeAdapter(
                 SuggestedRecipesActivity.this,
@@ -52,6 +62,7 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
 
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
+        // Get all recipes from the database
         Cursor cursor = db.rawQuery(
                 "SELECT * FROM recipes ORDER BY name ASC",
                 null
@@ -102,12 +113,14 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
 
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
+        // Gets all the ingredients needed for the recipe
         Cursor ingredientCursor = db.rawQuery(
                 "SELECT ingredient_name, required_quantity, unit " +
                         "FROM recipe_ingredients WHERE recipe_id = ?",
                 new String[]{String.valueOf(recipeId)}
         );
 
+        // Checks each ingredient one by one
         while (ingredientCursor.moveToNext()) {
 
             String ingredientName = ingredientCursor.getString(
@@ -123,15 +136,19 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
             );
 
             Cursor pantryCursor = db.rawQuery(
-                    "SELECT quantity, unit FROM pantry " +
-                            "WHERE LOWER(name) = LOWER(?)",
-                    new String[]{ingredientName}
+                    "SELECT name, quantity, unit FROM pantry",
+                    null
             );
 
             double totalAvailable = 0;
             boolean compatibleUnitFound = false;
 
+            // Checks pantry for the ingredient
             while (pantryCursor.moveToNext()) {
+
+                String pantryName = pantryCursor.getString(
+                        pantryCursor.getColumnIndexOrThrow("name")
+                );
 
                 double pantryQuantity = pantryCursor.getDouble(
                         pantryCursor.getColumnIndexOrThrow("quantity")
@@ -141,8 +158,12 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
                         pantryCursor.getColumnIndexOrThrow("unit")
                 );
 
-                if (getUnitType(pantryUnit).equals(getUnitType(requiredUnit))) {
+                if (normalizeIngredientName(pantryName)
+                        .equals(normalizeIngredientName(ingredientName))
+                        && getUnitType(pantryUnit)
+                        .equals(getUnitType(requiredUnit))) {
 
+                    // Matching pantry amounts together
                     totalAvailable += convertToBaseUnit(
                             pantryQuantity,
                             pantryUnit
@@ -154,14 +175,19 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
 
             pantryCursor.close();
 
+            // Missing ingredient will not show recipe
             if (!compatibleUnitFound) {
                 ingredientCursor.close();
                 return false;
             }
 
             double requiredBaseQuantity =
-                    convertToBaseUnit(requiredQuantity, requiredUnit);
+                    convertToBaseUnit(
+                            requiredQuantity,
+                            requiredUnit
+                    );
 
+            // Checks for enough ingredients
             if (totalAvailable < requiredBaseQuantity) {
                 ingredientCursor.close();
                 return false;
@@ -177,6 +203,7 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
 
         unit = unit.trim().toLowerCase();
 
+        // Puts same units into the same group
         switch (unit) {
 
             case "ml":
@@ -218,6 +245,7 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
 
         unit = unit.trim().toLowerCase();
 
+        // Converts the litres to ml and kg to grams
         switch (unit) {
 
             case "l":
@@ -235,5 +263,26 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
             default:
                 return quantity;
         }
+    }
+
+    private String normalizeIngredientName(String name) {
+
+        name = name.trim().toLowerCase();
+
+        // Fixes common plurals
+        if (name.equals("tomatoes")) {
+            return "tomato";
+        }
+
+        if (name.equals("potatoes")) {
+            return "potato";
+        }
+
+        // Handle simple words like Egg and Eggs
+        if (name.endsWith("s") && name.length() > 1) {
+            name = name.substring(0, name.length() - 1);
+        }
+
+        return name;
     }
 }
