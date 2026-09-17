@@ -37,7 +37,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
-        // Get the recipe name and instructions
+        // Gets the recipe name and instructions
         Cursor recipeCursor = db.rawQuery(
                 "SELECT name, instructions FROM recipes WHERE id = ?",
                 new String[]{String.valueOf(recipeId)}
@@ -59,7 +59,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         recipeCursor.close();
 
-        // Get all required ingredients
+        // Gets all the ingredients needed for this recipe
         Cursor ingredientCursor = db.rawQuery(
                 "SELECT ingredient_name, required_quantity, unit " +
                         "FROM recipe_ingredients WHERE recipe_id = ?",
@@ -68,6 +68,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         StringBuilder ingredientsText = new StringBuilder();
 
+        // Builds the ingredient list
         while (ingredientCursor.moveToNext()) {
 
             String ingredientName = ingredientCursor.getString(
@@ -98,6 +99,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     private String formatQuantity(double quantity) {
 
+        // Removes .0 from whole numbers
         if (quantity == Math.floor(quantity)) {
             return String.valueOf((int) quantity);
         }
