@@ -17,7 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-
+        // Table that stores user's pantry ingredients
         String createPantryTable =
                 "CREATE TABLE pantry (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -29,6 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(createPantryTable);
 
+        // Stores recipe name and instructions
         String createRecipesTable =
                 "CREATE TABLE recipes (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -38,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(createRecipesTable);
 
+        // Stores all the ingredients needed for recipes
         String createRecipeIngredientsTable =
                 "CREATE TABLE recipe_ingredients (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -49,6 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(createRecipeIngredientsTable);
 
+        // Adds the starting recipe data
         preloadRecipes(db);
     }
 
@@ -77,11 +80,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             db.execSQL(createRecipeIngredientsTable);
         }
+
         if (oldVersion < 3) {
             preloadRecipes(db);
         }
     }
 
+    // Adds recipe and returns its new ID
     private long insertRecipe(
             SQLiteDatabase db,
             String name,
@@ -95,6 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert("recipes", null, values);
     }
 
+    // Adds ingredient that belongs to a recipe
     private void insertRecipeIngredient(
             SQLiteDatabase db,
             long recipeId,
@@ -114,208 +120,222 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private void preloadRecipes(SQLiteDatabase db) {
 
-        // Recipe 1: Scrambled Eggs
+        // Clears the recipe tables
+        db.delete("recipe_ingredients", null, null);
+        db.delete("recipes", null, null);
+
+        // Recipe scrambled eggs
         long scrambledEggsId = insertRecipe(
                 db,
                 "Scrambled Eggs",
                 "Beat the eggs with milk. Melt the butter in a pan, add the egg mixture and stir until cooked."
         );
+
         insertRecipeIngredient(db, scrambledEggsId, "Egg", 2, "pcs");
         insertRecipeIngredient(db, scrambledEggsId, "Milk", 50, "ml");
         insertRecipeIngredient(db, scrambledEggsId, "Butter", 10, "g");
 
-        // Recipe 2: Cheese Sandwich
+        // Recipe cheese sandwich
         long cheeseSandwichId = insertRecipe(
                 db,
                 "Cheese Sandwich",
                 "Place the cheese between two slices of bread and serve."
         );
+
         insertRecipeIngredient(db, cheeseSandwichId, "Bread", 2, "slices");
         insertRecipeIngredient(db, cheeseSandwichId, "Cheese", 2, "slices");
 
-        // Recipe 3: Peanut Butter Toast
+        // Recipe peanut butter toast
         long peanutButterToastId = insertRecipe(
                 db,
                 "Peanut Butter Toast",
                 "Toast the bread and spread peanut butter evenly over each slice."
         );
+
         insertRecipeIngredient(db, peanutButterToastId, "Bread", 2, "slices");
         insertRecipeIngredient(db, peanutButterToastId, "Peanut Butter", 30, "g");
 
-        // Recipe 4: Banana Smoothie
+        // Recipe banana smoothie
         long bananaSmoothieId = insertRecipe(
                 db,
                 "Banana Smoothie",
                 "Add the banana and milk to a blender and blend until smooth."
         );
+
         insertRecipeIngredient(db, bananaSmoothieId, "Banana", 1, "pcs");
         insertRecipeIngredient(db, bananaSmoothieId, "Milk", 250, "ml");
 
-        // Recipe 5: Fried Egg on Toast
+        // Recipe fried egg on toast
         long friedEggToastId = insertRecipe(
                 db,
                 "Fried Egg on Toast",
                 "Toast the bread. Fry the egg in butter and place it on top of the toast."
         );
+
         insertRecipeIngredient(db, friedEggToastId, "Bread", 1, "slices");
         insertRecipeIngredient(db, friedEggToastId, "Egg", 1, "pcs");
         insertRecipeIngredient(db, friedEggToastId, "Butter", 5, "g");
 
-        // Recipe 6: Cheese Omelette
+        // Recipe cheese omelette
         long cheeseOmeletteId = insertRecipe(
                 db,
                 "Cheese Omelette",
                 "Beat the eggs with milk. Cook in a buttered pan, add cheese and fold the omelette."
         );
+
         insertRecipeIngredient(db, cheeseOmeletteId, "Egg", 2, "pcs");
         insertRecipeIngredient(db, cheeseOmeletteId, "Milk", 30, "ml");
         insertRecipeIngredient(db, cheeseOmeletteId, "Cheese", 30, "g");
         insertRecipeIngredient(db, cheeseOmeletteId, "Butter", 5, "g");
 
-        // Recipe 7: Banana Peanut Butter Toast
+        // Recipe banana peanut butter toast
         long bananaPbToastId = insertRecipe(
                 db,
                 "Banana Peanut Butter Toast",
                 "Toast the bread, spread with peanut butter and top with sliced banana."
         );
+
         insertRecipeIngredient(db, bananaPbToastId, "Bread", 2, "slices");
         insertRecipeIngredient(db, bananaPbToastId, "Peanut Butter", 30, "g");
         insertRecipeIngredient(db, bananaPbToastId, "Banana", 1, "pcs");
 
-        // Recipe 8: Cheese Toast
+        // Recipe cheese toast
         long cheeseToastId = insertRecipe(
                 db,
                 "Cheese Toast",
                 "Place cheese on the bread and toast until the cheese has melted."
         );
+
         insertRecipeIngredient(db, cheeseToastId, "Bread", 2, "slices");
         insertRecipeIngredient(db, cheeseToastId, "Cheese", 40, "g");
 
-        // Recipe 9: Tomato Sandwich
+        // Recipe tomato sandwich
         long tomatoSandwichId = insertRecipe(
                 db,
                 "Tomato Sandwich",
                 "Slice the tomato, place it between the bread slices and season with salt."
         );
+
         insertRecipeIngredient(db, tomatoSandwichId, "Bread", 2, "slices");
         insertRecipeIngredient(db, tomatoSandwichId, "Tomato", 1, "pcs");
         insertRecipeIngredient(db, tomatoSandwichId, "Salt", 1, "g");
 
-        // Recipe 10: Boiled Eggs
+        // Recipe boiled eggs
         long boiledEggsId = insertRecipe(
                 db,
                 "Boiled Eggs",
                 "Place the eggs in boiling water and cook until they reach your preferred firmness."
         );
+
         insertRecipeIngredient(db, boiledEggsId, "Egg", 2, "pcs");
 
-        // Recipe 11: Egg Sandwich
+        // Recipe egg sandwich
         long eggSandwichId = insertRecipe(
                 db,
                 "Egg Sandwich",
                 "Boil the eggs, slice them and place them between the bread slices."
         );
+
         insertRecipeIngredient(db, eggSandwichId, "Egg", 2, "pcs");
         insertRecipeIngredient(db, eggSandwichId, "Bread", 2, "slices");
 
-
-// Recipe 12: Tomato and Cheese Sandwich
+        // Recipe tomato and cheese sandwich
         long tomatoCheeseSandwichId = insertRecipe(
                 db,
                 "Tomato and Cheese Sandwich",
                 "Slice the tomato and place it on the bread with the cheese."
         );
+
         insertRecipeIngredient(db, tomatoCheeseSandwichId, "Bread", 2, "slices");
         insertRecipeIngredient(db, tomatoCheeseSandwichId, "Tomato", 1, "pcs");
         insertRecipeIngredient(db, tomatoCheeseSandwichId, "Cheese", 2, "slices");
 
-
-// Recipe 13: Banana Milkshake
+        // Recipe banana milkshake
         long bananaMilkshakeId = insertRecipe(
                 db,
                 "Banana Milkshake",
                 "Blend the banana, milk and sugar together until smooth."
         );
+
         insertRecipeIngredient(db, bananaMilkshakeId, "Banana", 1, "pcs");
         insertRecipeIngredient(db, bananaMilkshakeId, "Milk", 250, "ml");
         insertRecipeIngredient(db, bananaMilkshakeId, "Sugar", 10, "g");
 
-
-// Recipe 14: French Toast
+        // Recipe french toast
         long frenchToastId = insertRecipe(
                 db,
                 "French Toast",
                 "Beat the egg with milk. Dip the bread into the mixture and fry in butter until golden."
         );
+
         insertRecipeIngredient(db, frenchToastId, "Bread", 2, "slices");
         insertRecipeIngredient(db, frenchToastId, "Egg", 1, "pcs");
         insertRecipeIngredient(db, frenchToastId, "Milk", 50, "ml");
         insertRecipeIngredient(db, frenchToastId, "Butter", 10, "g");
 
-
-// Recipe 15: Tomato Omelette
+        // Recipe tomato omelette
         long tomatoOmeletteId = insertRecipe(
                 db,
                 "Tomato Omelette",
                 "Beat the eggs, add chopped tomato and cook the mixture in a buttered pan."
         );
+
         insertRecipeIngredient(db, tomatoOmeletteId, "Egg", 2, "pcs");
         insertRecipeIngredient(db, tomatoOmeletteId, "Tomato", 1, "pcs");
         insertRecipeIngredient(db, tomatoOmeletteId, "Butter", 5, "g");
 
-
-// Recipe 16: Cheese and Egg Toast
+        // Recipe cheese and egg toast
         long cheeseEggToastId = insertRecipe(
                 db,
                 "Cheese and Egg Toast",
                 "Toast the bread, cook the egg and place it on the toast with cheese."
         );
+
         insertRecipeIngredient(db, cheeseEggToastId, "Bread", 1, "slices");
         insertRecipeIngredient(db, cheeseEggToastId, "Egg", 1, "pcs");
         insertRecipeIngredient(db, cheeseEggToastId, "Cheese", 1, "slices");
 
-
-// Recipe 17: Peanut Butter Banana Smoothie
+        // Recipe peanut butter banana smoothie
         long pbBananaSmoothieId = insertRecipe(
                 db,
                 "Peanut Butter Banana Smoothie",
                 "Blend the banana, milk and peanut butter together until smooth."
         );
+
         insertRecipeIngredient(db, pbBananaSmoothieId, "Banana", 1, "pcs");
         insertRecipeIngredient(db, pbBananaSmoothieId, "Milk", 250, "ml");
         insertRecipeIngredient(db, pbBananaSmoothieId, "Peanut Butter", 20, "g");
 
-
-// Recipe 18: Buttered Toast
+        // Recipe buttered toast
         long butteredToastId = insertRecipe(
                 db,
                 "Buttered Toast",
                 "Toast the bread until golden and spread butter over each slice."
         );
+
         insertRecipeIngredient(db, butteredToastId, "Bread", 2, "slices");
         insertRecipeIngredient(db, butteredToastId, "Butter", 10, "g");
 
-
-// Recipe 19: Tomato Cheese Toast
+        // Recipe tomato cheese toast
         long tomatoCheeseToastId = insertRecipe(
                 db,
                 "Tomato Cheese Toast",
                 "Top the bread with sliced tomato and cheese, then toast until the cheese melts."
         );
+
         insertRecipeIngredient(db, tomatoCheeseToastId, "Bread", 2, "slices");
         insertRecipeIngredient(db, tomatoCheeseToastId, "Tomato", 1, "pcs");
         insertRecipeIngredient(db, tomatoCheeseToastId, "Cheese", 40, "g");
 
-
-// Recipe 20: Sweet Banana Toast
+        // Recipe sweet banana toast
         long sweetBananaToastId = insertRecipe(
                 db,
                 "Sweet Banana Toast",
                 "Toast the bread, add sliced banana and sprinkle sugar over the top."
         );
+
         insertRecipeIngredient(db, sweetBananaToastId, "Bread", 2, "slices");
         insertRecipeIngredient(db, sweetBananaToastId, "Banana", 1, "pcs");
         insertRecipeIngredient(db, sweetBananaToastId, "Sugar", 5, "g");
-
     }
 }
