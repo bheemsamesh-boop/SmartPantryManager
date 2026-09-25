@@ -16,6 +16,13 @@
         android:paddingRight="20dp"
         android:paddingBottom="40dp">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/addEditToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:title="Ingredient" />
+
         <TextView
             android:id="@+id/tvIngredientTitle"
             android:layout_width="match_parent"

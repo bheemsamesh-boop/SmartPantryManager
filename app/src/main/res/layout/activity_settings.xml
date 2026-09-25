@@ -10,13 +10,77 @@
     android:paddingRight="20dp"
     android:paddingBottom="40dp">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/settingsToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:title="Settings" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Settings"
-        android:textSize="28sp"
+        android:text="Appearance"
+        android:textSize="20sp"
         android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchDarkMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dark Mode"
+        android:textSize="16sp"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Use a darker theme throughout the app."
+        android:textSize="14sp"
         android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pantry"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchShowExpiryDates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show Expiry Dates"
+        android:textSize="16sp"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show expiry dates underneath pantry items."
+        android:textSize="14sp"
+        android:layout_marginBottom="16dp" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchConfirmDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm Before Delete"
+        android:textSize="16sp"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ask for confirmation before deleting an ingredient."
+        android:textSize="14sp"
+        android:layout_marginBottom="28dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -53,12 +117,5 @@
         android:layout_height="wrap_content"
         android:text="Built using Java and SQLite"
         android:textSize="16sp" />
-
-    <Button
-        android:id="@+id/btnBackToPantry"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Back to Pantry" />
 
 </LinearLayout>

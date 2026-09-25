@@ -9,8 +9,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.MenuItem;
+import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,6 +40,13 @@ public class AddEditIngredientActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_ingredient);
+
+        Toolbar toolbar = findViewById(R.id.addEditToolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         etIngredientName = findViewById(R.id.etIngredientName);
         etQuantity = findViewById(R.id.etQuantity);
@@ -264,10 +275,46 @@ public class AddEditIngredientActivity extends AppCompatActivity {
 
     private void deleteIngredient() {
 
+        SharedPreferences preferences =
+                getSharedPreferences(
+                        "SmartPantrySettings",
+                        MODE_PRIVATE
+                );
+
+        boolean confirmDelete =
+                preferences.getBoolean(
+                        "confirm_before_delete",
+                        true
+                );
+
+        if (confirmDelete) {
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Delete Ingredient")
+                    .setMessage(
+                            "Are you sure you want to delete this ingredient?"
+                    )
+                    .setPositiveButton(
+                            "Delete",
+                            (dialog, which) -> performDeleteIngredient()
+                    )
+                    .setNegativeButton(
+                            "Cancel",
+                            null
+                    )
+                    .show();
+
+        } else {
+
+            performDeleteIngredient();
+        }
+    }
+
+    private void performDeleteIngredient() {
+
         SQLiteDatabase db =
                 databaseHelper.getWritableDatabase();
 
-        // Deletes the selected ingredient using its ID
         int result = db.delete(
                 "pantry",
                 "id = ?",
@@ -292,5 +339,16 @@ public class AddEditIngredientActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT
             ).show();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
