@@ -43,7 +43,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         Recipe recipe = recipes.get(position);
 
-        holder.tvRecipeName.setText(recipe.getName());
+        holder.tvRecipeName.setText(
+                getRecipeEmoji(recipe.getName()) + " " + recipe.getName()
+        );
 
         holder.itemView.setOnClickListener(v -> {
 
@@ -64,6 +66,31 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     @Override
     public int getItemCount() {
         return recipes.size();
+    }
+
+    private String getRecipeEmoji(String recipeName) {
+
+        recipeName = recipeName.trim().toLowerCase();
+
+        if (recipeName.contains("smoothie")
+                || recipeName.contains("milkshake")) {
+            return "🥤";
+        }
+
+        if (recipeName.contains("omelette")
+                || recipeName.contains("egg")) {
+            return "🍳";
+        }
+
+        if (recipeName.contains("sandwich")) {
+            return "🥪";
+        }
+
+        if (recipeName.contains("toast")) {
+            return "🍞";
+        }
+
+        return "🍽️";
     }
 
     public static class RecipeViewHolder
