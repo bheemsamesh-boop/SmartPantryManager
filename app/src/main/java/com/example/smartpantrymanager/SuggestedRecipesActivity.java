@@ -4,12 +4,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +30,17 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_suggested_recipes);
 
+        Toolbar toolbar = findViewById(R.id.suggestedRecipesToolbar);
+        setSupportActionBar(toolbar);
+
+// Shows a back arrow at the top
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         recyclerViewRecipes = findViewById(R.id.recyclerViewRecipes);
         tvSuggestedRecipesMessage = findViewById(R.id.tvSuggestedRecipesMessage);
 
-        Button btnBackToPantry = findViewById(R.id.btnBackToPantry);
-
-        // Go back to the pantry screen
-        btnBackToPantry.setOnClickListener(v -> {
-            finish();
-        });
 
         databaseHelper = new DatabaseHelper(this);
         recipeList = new ArrayList<>();
@@ -284,5 +287,15 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         }
 
         return name;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

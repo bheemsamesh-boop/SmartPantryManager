@@ -14,6 +14,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/recipeDetailToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:title="Recipe Details" />
+
         <TextView
             android:id="@+id/tvRecipeDetailName"
             android:layout_width="match_parent"
@@ -53,6 +60,13 @@
             android:layout_height="wrap_content"
             android:text="Instructions will appear here."
             android:textSize="17sp" />
+
+        <Button
+            android:id="@+id/btnCookRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="🍳  Cook Recipe" />
 
     </LinearLayout>
 

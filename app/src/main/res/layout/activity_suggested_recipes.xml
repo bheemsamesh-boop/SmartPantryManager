@@ -8,6 +8,13 @@
     android:paddingRight="16dp"
     android:paddingBottom="40dp">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/suggestedRecipesToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:title="Suggested Recipes" />
+
     <TextView
         android:id="@+id/tvSuggestedRecipesTitle"
         android:layout_width="wrap_content"
@@ -30,13 +37,5 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-
-    <Button
-        android:id="@+id/btnBackToPantry"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Back to Pantry" />
 
 </LinearLayout>
