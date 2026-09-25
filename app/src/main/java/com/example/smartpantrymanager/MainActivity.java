@@ -39,6 +39,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.mainToolbar);
         setSupportActionBar(toolbar);
 
+        // Show a back arrow to return to Home
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         btnAddIngredient = findViewById(R.id.btnAddIngredient);
         recyclerViewPantry = findViewById(R.id.recyclerViewPantry);
         tvPantryMessage = findViewById(R.id.tvPantryMessage);
@@ -87,6 +92,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
 
         // Open suggested recipes from the toolbar menu
         if (id == R.id.menuSuggestedRecipes) {

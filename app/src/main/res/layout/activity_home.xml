@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingLeft="24dp"
+    android:paddingTop="48dp"
+    android:paddingRight="24dp"
+    android:paddingBottom="48dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Smart Pantry Manager"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Manage your pantry and find recipes using what you already have."
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginBottom="40dp" />
+
+    <Button
+        android:id="@+id/btnHomePantry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🥫  My Pantry"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/btnHomeRecipes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🍳  Suggested Recipes"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/btnHomeSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="⚙  Settings" />
+
+</LinearLayout>
